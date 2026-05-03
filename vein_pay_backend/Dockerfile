@@ -11,12 +11,17 @@ RUN apt-get update && apt-get install -y \
     libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
+# install dependencies first (better caching)
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements.txt && python manage.py collectstatic --noinput
-
+# now copy full project (IMPORTANT)
 COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["sh", "-c", "python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT"]
+# run migrations + collectstatic AFTER code exists
+RUN python manage.py migrate
+RUN python manage.py collectstatic --noinput
+
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:$PORT"]
