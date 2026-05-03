@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 import os
 
-FLASK_URL = os.environ.get('MODEL_SERVICE_URL', 'http://127.0.0.1:5000')
+FLASK_URL = os.environ.get('FLASK_API_URL', 'https://vein-ml-api.onrender.com')
 
 def enroll_vein_user(user_id, live_image):
     """
@@ -29,7 +29,7 @@ def verify_vein_user(stored_embedding, live_image, threshold=0.6):
     payload = {"stored_embedding": stored_embedding, "threshold": threshold}
 
     try:
-        response = requests.post(f"{FLASK_URL}/verify", data={"payload": json.dumps(payload)}, files=files, timeout=10)
+        response = requests.post(f"{FLASK_URL}/verify", data={"payload": json.dumps(payload)}, files=files, timeout=60)
         response.raise_for_status()
         result = response.json()
         return result.get("match", False)
