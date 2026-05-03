@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a new Axios instance with a custom configuration
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // The base URL for your Django API
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 // Use an interceptor to add the auth token to every request
