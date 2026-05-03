@@ -67,9 +67,13 @@ from .vein_utils import enroll_vein_user  # import the Flask helper
 
 # views.py
 
+from rest_framework.parsers import MultiPartParser, FormParser
+
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.filter(role='CUSTOMER')
     permission_classes = [IsShopOwner]
+
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
