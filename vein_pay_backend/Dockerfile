@@ -20,8 +20,6 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-# run migrations + collectstatic AFTER code exists
-RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+CMD python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
