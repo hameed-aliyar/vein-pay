@@ -154,8 +154,17 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOWED_ORIGINS = [
     "https://vein-pay.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = default_headers + (
+    "cache-control",
+    "pragma",
+)
