@@ -1,0 +1,16 @@
+# Virtual Environment
+venv/
+
+# Django specific
+*.pyc
+__pycache__/
+
+# Media files - user uploads
+/media/
+
+# Environment variables (for later)
+.env
+
+# Code Editor Specifics
+.vscode
+.idea

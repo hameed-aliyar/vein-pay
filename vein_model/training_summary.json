@@ -1,0 +1,8 @@
+{
+    "epochs": 15,
+    "batch_size": 16,
+    "learning_rate": 0.001,
+    "best_val_loss": 0.03631750301768382,
+    "final_train_loss": 0.024731167796999215,
+    "final_val_loss": 0.03875218387693167
+}

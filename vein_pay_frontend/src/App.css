@@ -1,0 +1,206 @@
+/* App.css (Final Version) */
+
+/* General Body & Font Styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212; /* Dark Background */
+  color: #e0e0e0; /* Light Text */
+}
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5rem; /* Space for fixed navigation */
+  min-height: 100vh;
+  width: 100%;
+}
+div {
+  box-sizing: border-box;
+}
+h1, h2, h3 {
+  color: #ffffff;
+  border-bottom: 1px solid #444;
+  padding-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+/* --- Navigation Bar Styles --- */
+.navbar {
+  display: flex;
+  justify-content: space-between; /* Pushes logo and links to opposite ends */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Allows items to wrap to the next line on small screens */
+  gap: 20px;       /* Adds consistent spacing between all links and the button */
+}
+
+.navbar-logo {
+    color: #007bff;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.navbar-links a {
+    color: #e0e0e0;
+    margin-left: 20px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+.navbar-links a:hover {
+    background-color: #333;
+}
+.navbar-links button {
+    background-color: #dc3545; /* Logout button color */
+}
+.navbar-links button:hover {
+    background-color: #c82333;
+}
+
+/* --- Content & Layout --- */
+.dashboard-container {
+  max-width: 1200px; 
+  width: 90%;
+}
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+}
+
+/* --- Status & Link Styles --- */
+a {
+  color: #8ab4f8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #c5e1a5;
+  text-decoration: underline;
+}
+
+.status-message {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.loading-message {
+  background-color: #333;
+  border: 1px solid #444;
+  color: #e0e0e0;
+}
+
+.error-message {
+  background-color: #5c1c1c; 
+  border: 1px solid #dc3545;
+  color: #ffcccc; 
+}
+
+
+/* --- Form & Input Styles --- */
+form {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  min-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+form div {
+  margin-bottom: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #aaa;
+}
+input[type="text"], input[type="password"], input[type="number"], select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
+/* --- Button Styles --- */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+button:hover {
+  background-color: #0056b3;
+}
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* --- Table Styles --- */
+table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+th, td {
+  border: 1px solid #444;
+  padding: 12px 15px;
+  text-align: left;
+}
+thead tr {
+  background-color: #333;
+  color: #ffffff;
+  font-weight: bold;
+}
+tbody tr:nth-of-type(even) {
+  background-color: #2a2a2a;
+}
+tbody tr:hover {
+  background-color: #4a4a4a;
+}
+
+/* --- Face Capture Component Styles --- */
+.face-capture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  border: 1px solid #444;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.webcam-video {
+  border: 3px solid #007bff;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  overflow: hidden; 
+}

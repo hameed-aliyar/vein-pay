@@ -1,0 +1,11 @@
+{
+    "genuine_mean": 0.14917320758104324,
+    "impostor_mean": 1.5295416331953473,
+    "genuine_min": 0.031209450215101242,
+    "genuine_max": 0.38668709993362427,
+    "impostor_min": 0.37132227420806885,
+    "impostor_max": 3.384371519088745,
+    "false_accepts_at_0.3": 0,
+    "false_rejects_at_0.3": 3,
+    "threshold_used": 0.3
+}

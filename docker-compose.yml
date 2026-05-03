@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: veinpay_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: vein_pay_db
+      POSTGRES_USER: vein_pay_user
+      POSTGRES_PASSWORD: goodboy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./vein_pay_backend
+    container_name: veinpay_backend
+    volumes:
+      - ./vein_pay_backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./vein_pay_backend/.env
+    depends_on:
+      - db
+      - model
+
+  model:
+    build: ./vein_model
+    container_name: vein_model_service
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build: ./vein_pay_frontend
+    container_name: veinpay_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
