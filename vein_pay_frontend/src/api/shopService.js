@@ -33,31 +33,29 @@ export const createBill = async (billData) => {
 export const createCustomer = async (customerData) => {
   try {
     const formData = new FormData();
-    formData.append('username', customerData.username.trim());
-    
-    if (!customerData.password) {
-      throw new Error("Password is required");
-    }
 
-    formData.append('password', customerData.password);
-    formData.append('biometric_type', 'VEIN');
+    formData.append("username", customerData.username.trim());
+    formData.append("password", customerData.password);
+    formData.append("biometric_type", "VEIN");
 
     if (customerData.veinImage) {
-      formData.append('vein_image', customerData.veinImage);
+      formData.append("vein_image", customerData.veinImage);
     }
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+    // DEBUG (VERY IMPORTANT)
+    for (let [key, value] of formData.entries()) {
+      console.log("📦", key, value);
     }
-    
-    const response = await api.post('/shop/customers/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+
+    const response = await api.post("/shop/customers/", formData);
+
     return response.data;
+
   } catch (error) {
-    console.error("Failed to create customer:", error);
+    console.error("❌ CREATE CUSTOMER FAILED:");
+    console.log("Status:", error.response?.status);
+    console.log("Data:", error.response?.data);
+
     throw error;
   }
 };

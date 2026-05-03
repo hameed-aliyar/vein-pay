@@ -46,46 +46,70 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         choices=BiometricData.BIOMETRIC_CHOICES,
         write_only=True
     )
+
     face_template = serializers.ImageField(write_only=True, required=False)
     vein_image = serializers.ImageField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ["username", "password", "biometric_type", "face_template", "vein_image"]
+        fields = [
+            "username",
+            "password",
+            "biometric_type",
+            "face_template",
+            "vein_image"
+        ]
 
     def create(self, validated_data):
-        print("VALIDATED DATA:", validated_data)  # DEBUG LINE
+        print("🔥 VALIDATED DATA:", validated_data)
 
         biometric_type = validated_data.pop("biometric_type")
         face_template = validated_data.pop("face_template", None)
         vein_image = validated_data.pop("vein_image", None)
         password = validated_data.pop("password")
 
-        user = User.objects.create_user(
-            username=validated_data["username"],
-            password=password,
-            role="CUSTOMER"
-        )
+        username = validated_data.get("username")
 
-        Wallet.objects.create(owner=user)
+        try:
+            # 1. Create user
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                role="CUSTOMER"
+            )
 
-        bio = BiometricData.objects.create(
-            owner=user,
-            biometric_type=biometric_type
-        )
+            # 2. Wallet
+            Wallet.objects.create(owner=user)
 
-        if biometric_type == "FACE" and face_template:
-            bio.face_template = face_template
+            # 3. Biometric record
+            bio = BiometricData.objects.create(
+                owner=user,
+                biometric_type=biometric_type
+            )
 
-        elif biometric_type == "VEIN" and vein_image:
-            from .vein_utils import enroll_vein_user
-            embedding = enroll_vein_user(user.id, vein_image)
-            bio.vein_embedding_json = embedding
+            # 4. FACE
+            if biometric_type == "FACE" and face_template:
+                bio.face_template = face_template
 
-        bio.save()
+            # 5. VEIN (SAFE WRAPPED)
+            elif biometric_type == "VEIN" and vein_image:
+                try:
+                    from .vein_utils import enroll_vein_user
+                    embedding = enroll_vein_user(user.id, vein_image)
+                    bio.vein_embedding_json = embedding
+                except Exception as e:
+                    user.delete()
+                    raise serializers.ValidationError({
+                        "vein_image": f"Vein enrollment failed: {str(e)}"
+                    })
 
-        return user
+            bio.save()
+            return user
+
+        except Exception as e:
+            print("🔥 CREATE CUSTOMER ERROR:", str(e))
+            raise
     
 
 class BillCreationSerializer(serializers.ModelSerializer):
