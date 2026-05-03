@@ -145,4 +145,8 @@ REST_FRAMEWORK = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = [
+    "vein-pay-api.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
