@@ -82,29 +82,30 @@ class CustomerListCreateView(generics.ListCreateAPIView):
 
         with transaction.atomic():
             user = serializer.save()
+
             Wallet.objects.get_or_create(owner=user)
 
             biometric_type = serializer.validated_data.get('biometric_type')
             face_template = serializer.validated_data.get('face_template')
             vein_image = serializer.validated_data.get('vein_image')
 
-            # Ensure only one BiometricData record per user
-            bio, created = BiometricData.objects.get_or_create(owner=user)
+            bio, _ = BiometricData.objects.get_or_create(owner=user)
             bio.biometric_type = biometric_type
 
             if biometric_type == 'FACE' and face_template:
                 bio.face_template = face_template
+
             elif biometric_type == 'VEIN' and vein_image:
                 embedding = enroll_vein_user(user.id, vein_image)
                 bio.vein_embedding_json = embedding
+
             bio.save()
 
-        response_data = {
+        return Response({
             "id": user.id,
             "username": user.username,
             "role": user.role
-        }
-        return Response(response_data, status=201)
+        }, status=201)
     
     def perform_create(self, serializer):
         user = serializer.save(role='CUSTOMER') 
