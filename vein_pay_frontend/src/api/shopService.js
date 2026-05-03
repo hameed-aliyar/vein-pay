@@ -42,12 +42,16 @@ export const createCustomer = async (customerData) => {
       formData.append("vein_image", customerData.veinImage);
     }
 
-    // DEBUG (VERY IMPORTANT)
-    for (let [key, value] of formData.entries()) {
-      console.log("📦", key, value);
+    console.log("🔥 FINAL FORM DATA CHECK:");
+    for (let [k, v] of formData.entries()) {
+      console.log(k, v);
     }
 
-    const response = await api.post("/shop/customers/", formData);
+    const response = await api.post("/shop/customers/", formData, {
+      headers: {
+        "Content-Type": undefined
+      }
+    });
 
     return response.data;
 
@@ -55,7 +59,6 @@ export const createCustomer = async (customerData) => {
     console.error("❌ CREATE CUSTOMER FAILED:");
     console.log("Status:", error.response?.status);
     console.log("Data:", error.response?.data);
-
     throw error;
   }
 };
