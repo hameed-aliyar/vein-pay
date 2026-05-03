@@ -1,26 +1,23 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Create a new Axios instance with a custom configuration
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: import.meta.env.VITE_API_URL
 });
 
-// Use an interceptor to add the auth token to every request
-api.interceptors.request.use(
-  (config) => {
-    // Get the token from localStorage (we'll save it there after login)
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      // If the token exists, add it to the Authorization header
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
-    // Do something with request error
+    console.error(error?.response || error);
     return Promise.reject(error);
   }
 );
