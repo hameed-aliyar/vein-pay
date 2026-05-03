@@ -34,31 +34,24 @@ export const createCustomer = async (customerData) => {
   try {
     const formData = new FormData();
 
-    formData.append("username", customerData.username.trim());
-    formData.append("password", customerData.password);
-    formData.append("biometric_type", "VEIN");
+    formData.append('username', customerData.username.trim());
+    formData.append('password', customerData.password);
+    formData.append('biometric_type', 'VEIN');
 
     if (customerData.veinImage) {
-      formData.append("vein_image", customerData.veinImage);
+      formData.append('vein_image', customerData.veinImage);
     }
 
-    console.log("🔥 FINAL FORM DATA CHECK:");
-    for (let [k, v] of formData.entries()) {
-      console.log(k, v);
-    }
-
-    const response = await api.post("/shop/customers/", formData, {
+    const response = await api.post('/shop/customers/', formData, {
       headers: {
-        "Content-Type": undefined
+        // ❌ DO NOT set Content-Type manually
       }
     });
 
     return response.data;
 
   } catch (error) {
-    console.error("❌ CREATE CUSTOMER FAILED:");
-    console.log("Status:", error.response?.status);
-    console.log("Data:", error.response?.data);
+    console.error("❌ CREATE CUSTOMER FAILED:", error.response?.data || error);
     throw error;
   }
 };

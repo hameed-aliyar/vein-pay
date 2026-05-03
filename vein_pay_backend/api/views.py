@@ -72,13 +72,45 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.filter(role='CUSTOMER')
     permission_classes = [IsShopOwner]
-
     parser_classes = [MultiPartParser, FormParser]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return UserListSerializer
         return CustomerRegistrationSerializer
+
+    def perform_create(self, serializer):
+        data = serializer.validated_data
+
+        biometric_type = data.get("biometric_type")
+        face_template = data.get("face_template")
+        vein_image = data.get("vein_image")
+        password = data.get("password")
+        username = data.get("username")
+
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            role="CUSTOMER"
+        )
+
+        Wallet.objects.create(owner=user)
+
+        bio = BiometricData.objects.create(
+            owner=user,
+            biometric_type=biometric_type
+        )
+
+        if biometric_type == "FACE" and face_template:
+            bio.face_template = face_template
+
+        elif biometric_type == "VEIN" and vein_image:
+            from .vein_utils import enroll_vein_user
+            bio.vein_embedding_json = enroll_vein_user(user.id, vein_image)
+
+        bio.save()
+
+        return user
 
 
 class BillListCreateView(generics.ListCreateAPIView):
