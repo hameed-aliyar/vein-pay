@@ -34,6 +34,11 @@ export const createCustomer = async (customerData) => {
   try {
     const formData = new FormData();
     formData.append('username', customerData.username.trim());
+    
+    if (!customerData.password) {
+      throw new Error("Password is required");
+    }
+
     formData.append('password', customerData.password);
     formData.append('biometric_type', 'VEIN');
 
@@ -41,7 +46,15 @@ export const createCustomer = async (customerData) => {
       formData.append('vein_image', customerData.veinImage);
     }
 
-    const response = await api.post('/shop/customers/', formData);
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+    
+    const response = await api.post('/shop/customers/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to create customer:", error);
