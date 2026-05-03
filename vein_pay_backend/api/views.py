@@ -69,46 +69,25 @@ from .vein_utils import enroll_vein_user  # import the Flask helper
 
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.filter(role='CUSTOMER')
+
     def get_serializer_class(self):
-        # Use different serializers for GET vs POST
         if self.request.method == 'GET':
             return UserListSerializer
         return CustomerRegistrationSerializer
+
     permission_classes = [IsShopOwner]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        with transaction.atomic():
-            user = serializer.save()
-
-            Wallet.objects.get_or_create(owner=user)
-
-            biometric_type = serializer.validated_data.get('biometric_type')
-            face_template = serializer.validated_data.get('face_template')
-            vein_image = serializer.validated_data.get('vein_image')
-
-            bio, _ = BiometricData.objects.get_or_create(owner=user)
-            bio.biometric_type = biometric_type
-
-            if biometric_type == 'FACE' and face_template:
-                bio.face_template = face_template
-
-            elif biometric_type == 'VEIN' and vein_image:
-                embedding = enroll_vein_user(user.id, vein_image)
-                bio.vein_embedding_json = embedding
-
-            bio.save()
+        user = serializer.save()
 
         return Response({
             "id": user.id,
             "username": user.username,
             "role": user.role
         }, status=201)
-    
-    def perform_create(self, serializer):
-        user = serializer.save(role='CUSTOMER') 
 
 
 class BillListCreateView(generics.ListCreateAPIView):

@@ -59,16 +59,21 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         vein_image = validated_data.pop("vein_image", None)
         password = validated_data.pop("password")
 
+        # 1. CREATE USER PROPERLY
         user = User.objects.create_user(
             username=validated_data["username"],
             password=password,
             role="CUSTOMER"
         )
 
-        Wallet.objects.get_or_create(owner=user)
+        # 2. CREATE WALLET
+        Wallet.objects.create(owner=user)
 
-        bio, _ = BiometricData.objects.get_or_create(owner=user)
-        bio.biometric_type = biometric_type
+        # 3. BIOMETRIC DATA
+        bio = BiometricData.objects.create(
+            owner=user,
+            biometric_type=biometric_type
+        )
 
         if biometric_type == "FACE" and face_template:
             bio.face_template = face_template
