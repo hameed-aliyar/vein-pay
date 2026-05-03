@@ -19,4 +19,7 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
+# same behavior as before, but now AFTER full code exists
+RUN python manage.py collectstatic --noinput
+
 CMD ["sh", "-c", "python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT"]
