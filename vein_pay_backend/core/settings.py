@@ -149,6 +149,7 @@ REST_FRAMEWORK = {
 
 ALLOWED_HOSTS = [
     "vein-pay-api.onrender.com",
+    "vein-pay.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
