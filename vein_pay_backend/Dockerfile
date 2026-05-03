@@ -19,4 +19,4 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput || true && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py shell < create_superuser.py && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT"]
