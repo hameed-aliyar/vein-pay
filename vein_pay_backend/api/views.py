@@ -69,25 +69,12 @@ from .vein_utils import enroll_vein_user  # import the Flask helper
 
 class CustomerListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.filter(role='CUSTOMER')
+    permission_classes = [IsShopOwner]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return UserListSerializer
         return CustomerRegistrationSerializer
-
-    permission_classes = [IsShopOwner]
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user = serializer.save()
-
-        return Response({
-            "id": user.id,
-            "username": user.username,
-            "role": user.role
-        }, status=201)
 
 
 class BillListCreateView(generics.ListCreateAPIView):
