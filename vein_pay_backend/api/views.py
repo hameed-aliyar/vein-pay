@@ -25,7 +25,8 @@ class WalletDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.wallet
+        wallet, _ = Wallet.objects.get_or_create(owner=self.request.user)
+        return wallet
 
 
 class AddMoneyView(generics.GenericAPIView):
@@ -80,9 +81,7 @@ class CustomerListCreateView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         with transaction.atomic():
-            user = serializer.save(role='CUSTOMER')
-            user.set_password(serializer.validated_data['password'])
-            user.save()
+            user = serializer.save()
             Wallet.objects.get_or_create(owner=user)
 
             biometric_type = serializer.validated_data.get('biometric_type')
@@ -186,8 +185,8 @@ class PaymentView(generics.GenericAPIView):
             )
 
         # --- PROCESS PAYMENT ---
-        customer_wallet = customer.wallet
-        shop_wallet = shop.wallet
+        customer_wallet, _ = Wallet.objects.get_or_create(owner=customer)
+        shop_wallet, _ = Wallet.objects.get_or_create(owner=shop)
         amount = bill.amount
 
         if customer_wallet.balance < amount:

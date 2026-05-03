@@ -33,12 +33,12 @@ export const createBill = async (billData) => {
 export const createCustomer = async (customerData) => {
   try {
     const formData = new FormData();
-    formData.append('username', customerData.username);
+    formData.append('username', customerData.username.trim());
     formData.append('password', customerData.password);
+    formData.append('biometric_type', 'VEIN');
 
     if (customerData.veinImage) {
-      formData.append('vein_image', customerData.veinImage, 'vein_image.jpg');
-      formData.append('biometric_type', 'VEIN');
+      formData.append('vein_image', customerData.veinImage);
     }
 
     const response = await api.post('/shop/customers/', formData);
