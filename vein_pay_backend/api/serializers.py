@@ -43,7 +43,8 @@ from .models import User, BiometricData
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
     biometric_type = serializers.ChoiceField(
-        choices=BiometricData.BIOMETRIC_CHOICES, write_only=True
+        choices=BiometricData.BIOMETRIC_CHOICES,
+        write_only=True
     )
     face_template = serializers.ImageField(write_only=True, required=False)
     vein_image = serializers.ImageField(write_only=True, required=False)
@@ -56,24 +57,29 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         biometric_type = validated_data.pop("biometric_type")
         face_template = validated_data.pop("face_template", None)
         vein_image = validated_data.pop("vein_image", None)
+        password = validated_data.pop("password")
 
-        user = User.objects.create(**validated_data)
-        user.set_password(validated_data["password"])
-        user.save()
-        Wallet.objects.create(owner=user)
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            password=password,
+            role="CUSTOMER"
+        )
 
-        # Create/update biometric data
+        Wallet.objects.get_or_create(owner=user)
+
         bio, _ = BiometricData.objects.get_or_create(owner=user)
         bio.biometric_type = biometric_type
 
         if biometric_type == "FACE" and face_template:
             bio.face_template = face_template
+
         elif biometric_type == "VEIN" and vein_image:
             from .vein_utils import enroll_vein_user
             embedding = enroll_vein_user(user.id, vein_image)
-            bio.vein_embedding_json = embedding  # <--- use correct field
+            bio.vein_embedding_json = embedding
 
         bio.save()
+
         return user
     
 
