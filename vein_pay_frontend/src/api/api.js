@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a new Axios instance with a custom configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // Use an interceptor to add the auth token to every request
