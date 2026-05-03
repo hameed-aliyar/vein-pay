@@ -13,4 +13,4 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "vein_service:app", "--bind", "0.0.0.0:$PORT"]
+CMD gunicorn vein_service:app --bind 0.0.0.0:$PORT
